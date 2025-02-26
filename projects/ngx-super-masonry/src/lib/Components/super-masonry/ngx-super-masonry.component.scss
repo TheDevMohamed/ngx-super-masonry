@@ -1,0 +1,10 @@
+:host {
+  display: block;
+  position: relative;
+  width: 100%;
+  /* Default values for CSS variables */
+  --masonry-column-width: 200px;
+  --masonry-gutter: 10px;
+  --masonry-animation-duration: 300ms;
+  --masonry-animation-timing: ease-out;
+}
