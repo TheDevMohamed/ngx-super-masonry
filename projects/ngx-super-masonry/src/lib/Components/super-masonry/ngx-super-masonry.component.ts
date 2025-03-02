@@ -2,21 +2,21 @@ import {
   AfterContentInit,
   Component, computed, ContentChildren, effect,
   ElementRef, inject,
-  Input, OnDestroy, QueryList, signal, ViewChild,
+  Input, OnDestroy, QueryList, signal,
 } from '@angular/core';
-import {NgForOf, NgIf, NgOptimizedImage, NgTemplateOutlet} from '@angular/common';
 import {MasonryItemComponent} from '../masonry-item/masonry-item.component';
 
 // masonry.types.ts
-export interface MasonryOptions {
+export interface MasonryOptions<TData> {
   columns?: number | 'auto';
   columnWidth?: number;
   gutter?: number;
   horizontalOrder?: boolean;
   animationDuration?: number;
   breakpoints?: {
-    [width: number]: Partial<MasonryOptions>;
+    [width: number]: Partial<MasonryOptions<TData>>;
   };
+  sortFunction?: (items: MasonryItemComponent<TData>[]) => MasonryItemComponent<TData>[];
 }
 
 @Component({
@@ -39,13 +39,13 @@ export interface MasonryOptions {
 
   `
 })
-export class NgxSuperMasonryComponent implements AfterContentInit, OnDestroy {
-  @Input() set options(value: MasonryOptions) {
+export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDestroy {
+  @Input() set options(value: MasonryOptions<TData>) {
     this._options.set(value);
     this.updateCSSVariables(value);
   }
   private layoutPending = false;
-  private updateCSSVariables(options: MasonryOptions) {
+  private updateCSSVariables(options: MasonryOptions<TData>) {
     const el = this.elementRef.nativeElement;
 
     // Update CSS variables based on options
@@ -62,10 +62,10 @@ export class NgxSuperMasonryComponent implements AfterContentInit, OnDestroy {
   }
 
   @ContentChildren(MasonryItemComponent)
-  items!: QueryList<MasonryItemComponent>;
+  items!: QueryList<MasonryItemComponent<TData>>;
 
   private readonly elementRef = inject(ElementRef);
-  private readonly _options = signal<MasonryOptions>({
+  private readonly _options = signal<MasonryOptions<TData>>({
     columns: 'auto',
     gutter: 10,
     horizontalOrder: false,
@@ -147,7 +147,7 @@ export class NgxSuperMasonryComponent implements AfterContentInit, OnDestroy {
     }
   }
 
-  private getActiveOptions(): MasonryOptions {
+  private getActiveOptions(): MasonryOptions<TData> {
     const baseOptions = this._options();
     const breakpoint = this.currentBreakpoint();
     if (breakpoint && baseOptions.breakpoints?.[breakpoint]) {
@@ -172,7 +172,7 @@ export class NgxSuperMasonryComponent implements AfterContentInit, OnDestroy {
     const opts = this.getActiveOptions();
     const columnCount = this.columns();
     const columnHeights = new Array(columnCount).fill(0);
-    const items = this.items.toArray();
+    const items = opts.sortFunction ? opts.sortFunction(this.items.toArray()) : this.items.toArray();
 
     items.forEach(item => {
       const itemEl = item.elementRef.nativeElement;
@@ -189,7 +189,7 @@ export class NgxSuperMasonryComponent implements AfterContentInit, OnDestroy {
 
   private getNextColumnIndex(
     columnHeights: number[],
-    options: MasonryOptions
+    options: MasonryOptions<TData>
   ): number {
     if (options.horizontalOrder) {
       return columnHeights.indexOf(Math.min(...columnHeights));

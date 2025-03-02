@@ -1,4 +1,4 @@
-import {Component, ElementRef, inject} from '@angular/core';
+import {Component, ElementRef, inject, Input} from '@angular/core';
 
 @Component({
   selector: 'lib-masonry-item',
@@ -14,6 +14,7 @@ import {Component, ElementRef, inject} from '@angular/core';
     }
   `]
 })
-export class MasonryItemComponent {
+export class MasonryItemComponent<T> {
+  @Input({required: true}) data: T = {} as T;
   public readonly elementRef = inject(ElementRef);
 }

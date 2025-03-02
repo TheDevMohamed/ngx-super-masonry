@@ -1,4 +1,3 @@
-
 .image-card {
   position: relative;
   border-radius: 8px;
@@ -27,27 +26,3 @@ img {
 img.loaded {
   opacity: 1;
 }
-
-
-
-
-
-
-
-
-lib-masonry-item {
-  margin-bottom: 10px; /* Matches gutter */
-}
-
-img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-p {
-  margin: 5px 0;
-  text-align: center;
-}
-
-
