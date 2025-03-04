@@ -10,7 +10,8 @@ import {MasonryItemComponent} from '../masonry-item/masonry-item.component';
 export interface MasonryOptions<TData> {
   columns?: number | 'auto';
   columnWidth?: number;
-  gutter?: number;
+  gutterX?: number;  // Horizontal gutter
+  gutterY?: number;  // Vertical gutter
   horizontalOrder?: boolean;
   animationDuration?: number;
   breakpoints?: {
@@ -30,9 +31,11 @@ export interface MasonryOptions<TData> {
       display: block;
       position: relative;
       width: 100%;
+      box-sizing: border-box;
       /* Default values for CSS variables */
       --masonry-column-width: 200px;
-      --masonry-gutter: 10px;
+      --masonry-gutter-x: 10px;
+      --masonry-gutter-y: 10px;
       --masonry-animation-duration: 300ms;
       --masonry-animation-timing: ease-out;
     }
@@ -47,15 +50,18 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
   private layoutPending = false;
   private updateCSSVariables(options: MasonryOptions<TData>) {
     const el = this.elementRef.nativeElement;
+    const columns = options.columns || 1;
+    const gutterX = options.gutterX || 0;
+    const gutterY = options.gutterY || 0;
 
-    // Update CSS variables based on options
-    if (options.columnWidth) {
-      el.style.setProperty('--masonry-column-width', `${options.columnWidth}px`);
-      el.style.setProperty('--masonry-column-width', `${options.columnWidth}px`);
-    }
-    if (options.gutter) {
-      el.style.setProperty('--masonry-gutter', `${options.gutter}px`);
-    }
+    // @ts-ignore
+    const columnWidthPercent = 100 / columns;
+    // @ts-ignore
+    const gutterPercent = (gutterX / columns);
+
+    el.style.setProperty('--masonry-column-width', `calc(${columnWidthPercent}% - ${gutterPercent*2}px)`);
+    el.style.setProperty('--masonry-gutter-x', `${gutterX}px`);
+    el.style.setProperty('--masonry-gutter-y', `${gutterY}px`);
     if (options.animationDuration) {
       el.style.setProperty('--masonry-animation-duration', `${options.animationDuration}ms`);
     }
@@ -67,7 +73,8 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
   private readonly elementRef = inject(ElementRef);
   private readonly _options = signal<MasonryOptions<TData>>({
     columns: 'auto',
-    gutter: 10,
+    gutterX: 10,
+    gutterY: 10,
     horizontalOrder: false,
     animationDuration: 100
   });
@@ -80,8 +87,8 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
     if (opts.columns === 'auto') {
       const containerWidth = this.elementRef.nativeElement.offsetWidth;
       return Math.floor(
-        (containerWidth + opts.gutter!) /
-        (opts.columnWidth! + opts.gutter!)
+        (containerWidth + opts.gutterX!) /
+        (opts.columnWidth! + opts.gutterX!)
       );
     }
     return opts.columns || 1;
@@ -173,18 +180,32 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
     const columnCount = this.columns();
     const columnHeights = new Array(columnCount).fill(0);
     const items = opts.sortFunction ? opts.sortFunction(this.items.toArray()) : this.items.toArray();
+    const gutterX = opts.gutterX || 0;
+    const gutterY = opts.gutterY || 0;
 
-    items.forEach(item => {
+    // Calculate container and column dimensions
+    const containerWidth = this.elementRef.nativeElement.offsetWidth;
+    const totalGutterWidth = gutterX * (columnCount - 1);
+    const columnWidth = (containerWidth - totalGutterWidth) / columnCount;
+
+    items.forEach((item, index) => {
       const itemEl = item.elementRef.nativeElement;
       const columnIndex = this.getNextColumnIndex(columnHeights, opts);
-      const x = (opts.columnWidth! + opts.gutter!) * columnIndex;
+
+      const x = columnIndex * (columnWidth + gutterX);
       const y = columnHeights[columnIndex];
 
       itemEl.style.transform = `translate(${x}px, ${y}px)`;
-      columnHeights[columnIndex] += itemEl.offsetHeight + opts.gutter!;
+      itemEl.style.width = `${columnWidth}px`;
+
+      columnHeights[columnIndex] += itemEl.offsetHeight;
+      if (index < items.length - columnCount) {
+        columnHeights[columnIndex] += gutterY;
+      }
     });
 
-    this.elementRef.nativeElement.style.height = `${Math.max(...columnHeights)}px`;
+    const maxHeight = Math.max(...columnHeights);
+    this.elementRef.nativeElement.style.height = `${maxHeight}px`;
   }
 
   private getNextColumnIndex(

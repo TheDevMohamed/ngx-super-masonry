@@ -1,15 +1,18 @@
-<lib-ngx-super-masonry [options]="masonryOptions">
-  <lib-masonry-item *ngFor="let item of images trackBy: trackByFn" [data]="item">
-    <!-- Card wrapper -->
-    <div class="image-card">
-      <!-- Loading placeholder -->
-      <div *ngIf="!item.imageLoaded" class="loading-placeholder"></div>
-      <!-- Image -->
-      <img
-        [src]="item.src"
-        (load)="onImageLoad(item)"
-        [class.loaded]="item.imageLoaded"
-       alt="">
-    </div>
-  </lib-masonry-item>
-</lib-ngx-super-masonry>
+
+<div class="container">
+  <div class="masonry">
+      <lib-ngx-super-masonry [options]="masonryOptions">
+        <lib-masonry-item *ngFor="let item of images trackBy: trackByFn" [data]="item">
+          <div class="image-card">
+            <img
+              [src]="item.src"
+              (load)="onImageLoad(item)"
+              [class.loaded]="item.imageLoaded" alt="">
+            <div class="item-id">{{item.id}}</div>
+          </div>
+        </lib-masonry-item>
+      </lib-ngx-super-masonry>
+  </div>
+</div>
+
+

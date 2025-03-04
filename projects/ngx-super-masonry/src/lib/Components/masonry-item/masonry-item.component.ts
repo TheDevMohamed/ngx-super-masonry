@@ -9,7 +9,7 @@ import {Component, ElementRef, inject, Input} from '@angular/core';
     :host {
       display: block;
       position: absolute;
-      width: var(--masonry-column-width, auto);
+      width: var(--masonry-column-width);
       transition: transform var(--masonry-animation-duration, 300ms) ease-out;
     }
   `]
