@@ -1,10 +1,18 @@
 import {
   AfterContentInit,
-  Component, computed, ContentChildren, effect,
+  Component, computed, ContentChildren,
   ElementRef, inject,
   Input, OnDestroy, QueryList, signal,
 } from '@angular/core';
 import {MasonryItemComponent} from '../masonry-item/masonry-item.component';
+
+
+export interface SearchCondition<T> {
+  property: keyof T;
+  value: any;
+  matchMode: 'exact' | 'contains' | 'startsWith' | 'endsWith' | 'range';
+  operator?: 'AND' | 'OR';
+}
 
 // masonry.types.ts
 export interface MasonryOptions<TData> {
@@ -12,12 +20,12 @@ export interface MasonryOptions<TData> {
   columnWidth?: number;
   gutterX?: number;  // Horizontal gutter
   gutterY?: number;  // Vertical gutter
-  horizontalOrder?: boolean;
   animationDuration?: number;
   breakpoints?: {
     [width: number]: Partial<MasonryOptions<TData>>;
   };
   sortFunction?: (items: MasonryItemComponent<TData>[]) => MasonryItemComponent<TData>[];
+  searchConditions?: SearchCondition<TData>[];
 }
 
 @Component({
@@ -46,6 +54,7 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
   @Input() set options(value: MasonryOptions<TData>) {
     this._options.set(value);
     this.updateCSSVariables(value);
+    this.layout();
   }
   private layoutPending = false;
   private updateCSSVariables(options: MasonryOptions<TData>) {
@@ -75,7 +84,6 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
     columns: 'auto',
     gutterX: 10,
     gutterY: 10,
-    horizontalOrder: false,
     animationDuration: 100
   });
 
@@ -99,11 +107,6 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
     this.resizeObserver = new ResizeObserver(() => {
       this.checkBreakpoint();
       this.layout();
-    });
-
-    // Set up effects
-    effect(() => {
-      this.applyLayout();
     });
   }
   private itemObservers: ResizeObserver[] = [];
@@ -163,7 +166,7 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
     return baseOptions;
   }
 
-  private layout() {
+  public layout() {
     if (!this.layoutPending) {
       this.layoutPending = true;
       requestAnimationFrame(() => {
@@ -179,7 +182,11 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
     const opts = this.getActiveOptions();
     const columnCount = this.columns();
     const columnHeights = new Array(columnCount).fill(0);
-    const items = opts.sortFunction ? opts.sortFunction(this.items.toArray()) : this.items.toArray();
+
+    // First filter, then sort
+    let items = this.filterItems(this.items.toArray(), opts);
+    items = opts.sortFunction ? opts.sortFunction(items) : items;
+
     const gutterX = opts.gutterX || 0;
     const gutterY = opts.gutterY || 0;
 
@@ -187,6 +194,16 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
     const containerWidth = this.elementRef.nativeElement.offsetWidth;
     const totalGutterWidth = gutterX * (columnCount - 1);
     const columnWidth = (containerWidth - totalGutterWidth) / columnCount;
+
+    // Hide filtered-out items
+    this.items.forEach(item => {
+      const itemEl = item.elementRef.nativeElement;
+      if (!items.includes(item)) {
+        itemEl.style.display = 'none';
+        return;
+      }
+      itemEl.style.display = '';
+    });
 
     items.forEach((item, index) => {
       const itemEl = item.elementRef.nativeElement;
@@ -204,18 +221,13 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
       }
     });
 
-    const maxHeight = Math.max(...columnHeights);
+    const maxHeight = Math.max(...columnHeights, 0);
     this.elementRef.nativeElement.style.height = `${maxHeight}px`;
   }
 
   private getNextColumnIndex(
-    columnHeights: number[],
-    options: MasonryOptions<TData>
+    columnHeights: number[]
   ): number {
-    if (options.horizontalOrder) {
-      return columnHeights.indexOf(Math.min(...columnHeights));
-    }
-
     return columnHeights.reduce(
       (shortest, height, index) =>
         height < columnHeights[shortest] ? index : shortest,
@@ -223,10 +235,43 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
     );
   }
 
-  private applyLayout() {
-    requestAnimationFrame(() => {
-      console.log("test");
-      this.layout()
+  protected filterItems(
+    items: MasonryItemComponent<TData>[],
+    options: MasonryOptions<TData>
+  ): MasonryItemComponent<TData>[] {
+    if (!options.searchConditions?.length) return items;
+
+    return items.filter(item => {
+      return options.searchConditions!.reduce((result, condition, index) => {
+        const itemValue = item.data[condition.property];
+        const matches = this.matchesCondition(itemValue, condition);
+
+        if (index === 0) return matches;
+        return condition.operator === 'OR'
+          ? result || matches
+          : result && matches;
+      }, true);
     });
+  }
+
+  private matchesCondition(value: any, condition: SearchCondition<TData>): boolean {
+    const { matchMode, value: searchValue } = condition;
+
+    switch (matchMode) {
+      case 'exact':
+        return value === searchValue;
+      case 'contains':
+        return String(value).toLowerCase().includes(String(searchValue).toLowerCase());
+      case 'startsWith':
+        return String(value).toLowerCase().startsWith(String(searchValue).toLowerCase());
+      case 'endsWith':
+        return String(value).toLowerCase().endsWith(String(searchValue).toLowerCase());
+      case 'range':
+        return Array.isArray(searchValue) &&
+          value >= searchValue[0] &&
+          value <= searchValue[1];
+      default:
+        return true;
+    }
   }
 }

@@ -1,18 +1,110 @@
+<div class="container-fluid py-4">
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="bg-light p-4 rounded shadow-sm sticky-top" style="top: 1rem" [formGroup]="optionsForm">
+        <accordion>
+          <accordion-group class="mb-4" [isOpen]="true">
+            <div accordion-heading class="h5 mb-0">Layout</div>
+            <div formGroupName="layout">
+              <div class="mb-3">
+                <label class="form-label d-flex align-items-center">
+                  <span class="me-2">Columns:</span>
+                  <input type="number" class="form-control form-control-sm w-auto"
+                         formControlName="columns" min="1" max="6">
+                </label>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">
+                  Gutter X: {{optionsForm.get('layout.gutterX')?.value}}px
+                  <input type="range" class="form-range"
+                         formControlName="gutterX" min="0" max="50">
+                </label>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">
+                  Gutter Y: {{optionsForm.get('layout.gutterY')?.value}}px
+                  <input type="range" class="form-range"
+                         formControlName="gutterY" min="0" max="50">
+                </label>
+              </div>
+            </div>
+          </accordion-group>
 
-<div class="container">
-  <div class="masonry">
+          <accordion-group class="mb-4" [isOpen]="true">
+            <div accordion-heading class="h5 mb-0">Animation</div>
+            <div formGroupName="animation">
+              <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input"
+                       formControlName="enabled" id="animationEnabled">
+                <label class="form-check-label" for="animationEnabled">
+                  Enable Animation
+                </label>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">
+                  Duration: {{optionsForm.get('animation.duration')?.value}}ms
+                  <input type="range" class="form-range"
+                         formControlName="duration" min="0" max="500" step="50">
+                </label>
+              </div>
+            </div>
+          </accordion-group>
+
+          <accordion-group [isOpen]="true">
+            <div accordion-heading class="h5 mb-0">Filter & Sort</div>
+            <div formGroupName="filter">
+              <div formGroupName="range" class="mb-3">
+                <label class="form-label">
+                  Min Price: {{optionsForm.get('filter.range.min')?.value}}
+                  <input type="range" class="form-range"
+                         formControlName="min" [min]="0" [max]="1000" [step]="10">
+                </label>
+                <label class="form-label">
+                  Max Price: {{optionsForm.get('filter.range.max')?.value}}
+                  <input type="range" class="form-range"
+                         formControlName="max" [min]="0" [max]="1000" [step]="10">
+                </label>
+              </div>
+              <div class="mb-3">
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input"
+                         formControlName="enableSort" id="enableSort">
+                  <label class="form-check-label" for="enableSort">
+                    Enable Price Sorting
+                  </label>
+                </div>
+                <select class="form-select" formControlName="sortDirection">
+                  <option value="asc">Low to High</option>
+                  <option value="desc">High to Low</option>
+                </select>
+              </div>
+            </div>
+          </accordion-group>
+        </accordion>
+      </div>
+    </div>
+
+    <div class="col-md-6">
       <lib-ngx-super-masonry [options]="masonryOptions">
         <lib-masonry-item *ngFor="let item of images trackBy: trackByFn" [data]="item">
-          <div class="image-card">
-            <img
-              [src]="item.src"
-              (load)="onImageLoad(item)"
-              [class.loaded]="item.imageLoaded" alt="">
-            <div class="item-id">{{item.id}}</div>
+          <div class="card h-100">
+            <div class="image-container">
+              <div class="placeholder-overlay" [class.hidden]="item.imageLoaded"></div>
+              <img [src]="item.src"
+                   (load)="onImageLoad(item)"
+                   [class.loaded]="item.imageLoaded"
+                   class="card-img-top"
+                   alt="">
+            </div>
+            <div class="position-absolute top-0 start-0 m-2 badge bg-danger">
+              {{item.id}}
+            </div>
+            <div class="card-footer">
+              {{item.price}}$
+            </div>
           </div>
         </lib-masonry-item>
       </lib-ngx-super-masonry>
+    </div>
   </div>
 </div>
-
-
