@@ -207,7 +207,7 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
 
     items.forEach((item, index) => {
       const itemEl = item.elementRef.nativeElement;
-      const columnIndex = this.getNextColumnIndex(columnHeights, opts);
+      const columnIndex = this.getNextColumnIndex(columnHeights);
 
       const x = columnIndex * (columnWidth + gutterX);
       const y = columnHeights[columnIndex];
