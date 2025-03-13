@@ -1,59 +1,109 @@
-# AngularMasonrySuperstar
+# ngx-super-masonry
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.8.
+A high-performance masonry layout library for Angular applications with advanced configuration options for responsive designs.
 
-## Development server
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Angular](https://img.shields.io/badge/Angular-v17+-red.svg)
 
-To start a local development server, run:
+## Overview
 
-```bash
-ng serve
-```
+`ngx-super-masonry` provides an optimized implementation of the masonry grid layout pattern for Angular applications. The library offers dynamic column calculation, responsive layouts, animation support, and filtering/sorting capabilities with minimal performance impact.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Features
 
-## Code scaffolding
+- **Dynamic Column Sizing** - Choose between auto-responsive or fixed column layouts
+- **Performance Optimized** - Minimizes reflow operations and batches DOM updates
+- **Animation Support** - Smooth transitions when items change position
+- **Filtering & Sorting** - Built-in support for custom item filtering and ordering
+- **TypeScript Support** - Fully typed API with generic support for item data
+- **Responsive Design** - Automatically adapts to container width changes
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Installation
 
 ```bash
-ng generate --help
+npm install ngx-super-masonry --save
 ```
 
-## Building
+## Basic Usage
 
-To build the project run:
+Import and add to your component:
 
-```bash
-ng build
+```typescript
+import { MasonryItemComponent, NgxSuperMasonryComponent } from 'ngx-super-masonry';
+
+@Component({
+  selector: 'app-gallery',
+  standalone: true,
+  imports: [MasonryItemComponent, NgxSuperMasonryComponent, NgForOf],
+  template: `
+    <lib-ngx-super-masonry [options]="masonryOptions">
+      <lib-masonry-item *ngFor="let item of items" [data]="item">
+        <!-- Your item content here -->
+      </lib-masonry-item>
+    </lib-ngx-super-masonry>
+  `
+})
+export class GalleryComponent {
+  items = [/* your items */];
+  
+  masonryOptions = {
+    columns: 'auto',
+    columnWidth: 250,
+    gutterX: 10,
+    gutterY: 10
+  };
+}
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Configuration Options
 
-## Running unit tests
+The masonry grid can be configured with the following options:
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| columns | 'auto' \| number | 'auto' | Column calculation mode |
+| columnWidth | number | 200 | Width of each column in auto mode |
+| gutterX | number | 10 | Horizontal spacing between items |
+| gutterY | number | 10 | Vertical spacing between items |
+| animationDuration | number | 0 | Duration of animations in ms |
+| filterFunction | Function | undefined | Custom function to filter items |
+| sortFunction | Function | undefined | Custom function to sort items |
 
-```bash
-ng test
-```
+## Performance Considerations
 
-## Running end-to-end tests
+For optimal performance:
 
-For end-to-end (e2e) testing, run:
+1. Use the `trackByFn` with `*ngFor` to improve rendering efficiency
+2. Specify image dimensions to reduce layout shifts
+3. Use `requestAnimationFrame` for DOM updates
+4. Apply CSS containment to reduce layout calculations
+5. Pre-calculate content dimensions where possible
 
-```bash
-ng e2e
-```
+## Browser Compatibility
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
 
-## Additional Resources
+## Events
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The component provides the following events:
+
+| Event | Description |
+|-------|-------------|
+| layoutComplete | Emitted when layout calculation completes |
+| itemsFiltered | Emitted when items are filtered |
+| itemsSorted | Emitted when items are sorted |
+
+## Demo
+
+Check out the [live demo](https://demo-url-here.com) to see ngx-super-masonry in action and experiment with different configuration options.
+
+## License
+
+MIT
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
