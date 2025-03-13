@@ -3,26 +3,57 @@
     <div class="col-md-6">
       <div class="bg-light p-4 rounded shadow-sm sticky-top" style="top: 1rem" [formGroup]="optionsForm">
         <accordion>
+          <!-- Layout Section -->
           <accordion-group class="mb-4" [isOpen]="true">
             <div accordion-heading class="h5 mb-0">Layout</div>
             <div formGroupName="layout">
+              <!-- Column configuration with more info -->
               <div class="mb-3">
-                <label class="form-label d-flex align-items-center">
-                  <span class="me-2">Columns:</span>
-                  <input type="number" class="form-control form-control-sm w-auto"
-                         formControlName="columns" min="1" max="6">
-                </label>
+                <div class="mb-2">
+                  <span class="badge bg-secondary mb-2">Column Mode</span>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio"
+                           id="autoColumns" value="auto"
+                           formControlName="columnMode">
+                    <label class="form-check-label" for="autoColumns">
+                      Auto (responsive)
+                    </label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio"
+                           id="fixedColumns" value="fixed"
+                           formControlName="columnMode">
+                    <label class="form-check-label" for="fixedColumns">
+                      Fixed number
+                    </label>
+                  </div>
+                </div>
+
+                <!-- Show column number input when using fixed mode -->
+                <div class="mb-3" *ngIf="optionsForm.get('layout.columnMode')?.value === 'fixed'">
+                  <label class="form-label">
+                    Number of Columns:
+                    <input type="number" class="form-control form-control-sm w-auto"
+                           formControlName="columns" min="1" max="12">
+                  </label>
+                </div>
               </div>
+
+              <!-- Gutters remain unchanged -->
               <div class="mb-3">
                 <label class="form-label">
-                  Gutter X: {{optionsForm.get('layout.gutterX')?.value}}px
+                  <span class="badge bg-secondary mb-2">
+                    Gutter X: <span class="text-warning">{{optionsForm.get('layout.gutterX')?.value}}px</span>
+                  </span>
                   <input type="range" class="form-range"
                          formControlName="gutterX" min="0" max="50">
                 </label>
               </div>
               <div class="mb-3">
                 <label class="form-label">
-                  Gutter Y: {{optionsForm.get('layout.gutterY')?.value}}px
+                  <span class="badge bg-secondary mb-2">
+                    Gutter Y: <span class="text-warning">{{optionsForm.get('layout.gutterY')?.value}}px</span>
+                  </span>
                   <input type="range" class="form-range"
                          formControlName="gutterY" min="0" max="50">
                 </label>
@@ -30,6 +61,7 @@
             </div>
           </accordion-group>
 
+          <!-- Animation Section -->
           <accordion-group class="mb-4" [isOpen]="true">
             <div accordion-heading class="h5 mb-0">Animation</div>
             <div formGroupName="animation">
@@ -42,7 +74,9 @@
               </div>
               <div class="mb-3">
                 <label class="form-label">
-                  Duration: {{optionsForm.get('animation.duration')?.value}}ms
+                  <span class="badge bg-secondary mb-2">
+                    Duration: <span class="text-warning">{{optionsForm.get('animation.duration')?.value}}ms</span>
+                  </span>
                   <input type="range" class="form-range"
                          formControlName="duration" min="0" max="500" step="50">
                 </label>
@@ -50,32 +84,38 @@
             </div>
           </accordion-group>
 
-          <accordion-group [isOpen]="true">
-            <div accordion-heading class="h5 mb-0">Filter & Sort</div>
+          <!-- Filter Section -->
+          <accordion-group class="mb-4" [isOpen]="true">
+            <div accordion-heading class="h5 mb-0">Filter Options</div>
             <div formGroupName="filter">
-              <div formGroupName="range" class="mb-3">
-                <label class="form-label">
-                  Min Price: {{optionsForm.get('filter.range.min')?.value}}
-                  <input type="range" class="form-range"
-                         formControlName="min" [min]="0" [max]="1000" [step]="10">
-                </label>
-                <label class="form-label">
-                  Max Price: {{optionsForm.get('filter.range.max')?.value}}
-                  <input type="range" class="form-range"
-                         formControlName="max" [min]="0" [max]="1000" [step]="10">
-                </label>
-              </div>
+              <!-- Enable Filter -->
               <div class="mb-3">
                 <div class="form-check">
                   <input type="checkbox" class="form-check-input"
-                         formControlName="enableSort" id="enableSort">
-                  <label class="form-check-label" for="enableSort">
-                    Enable Price Sorting
+                         formControlName="filterEnabled" id="filterEnabled">
+                  <label class="form-check-label" for="filterEnabled">
+                    Enable Filter ( Price > 500$ )
                   </label>
                 </div>
+              </div>
+
+              <!-- Enable Sort -->
+              <div class="mb-3">
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input"
+                         formControlName="sortEnabled" id="sortEnabled">
+                  <label class="form-check-label" for="sortEnabled">
+                    Enable price Sorting
+                  </label>
+                </div>
+              </div>
+
+              <!-- Sort Direction -->
+              <div class="mb-3" *ngIf="optionsForm.get('filter.sortEnabled')?.value">
+                <label class="form-label">Sort Direction</label>
                 <select class="form-select" formControlName="sortDirection">
-                  <option value="asc">Low to High</option>
-                  <option value="desc">High to Low</option>
+                  <option value="asc">Price: Low to High</option>
+                  <option value="desc">Price: High to Low</option>
                 </select>
               </div>
             </div>
@@ -84,12 +124,16 @@
       </div>
     </div>
 
+    <!-- Masonry Grid -->
     <div class="col-md-6">
-      <lib-ngx-super-masonry [options]="masonryOptions">
-        <lib-masonry-item *ngFor="let item of images trackBy: trackByFn" [data]="item">
+      <lib-ngx-super-masonry [options]="masonryOptions"  (layoutComplete)="onLayoutComplete($event)">
+        <lib-masonry-item *ngFor="let item of images; trackBy: trackByFn" [data]="item">
           <div class="card h-100">
             <div class="image-container">
-              <div class="placeholder-overlay" [class.hidden]="item.imageLoaded"></div>
+              <div class="placeholder-overlay" [class.hidden]="item.imageLoaded">
+                <div class="skeleton-badge"></div>
+                <div class="skeleton-footer"></div>
+              </div>
               <img [src]="item.src"
                    (load)="onImageLoad(item)"
                    [class.loaded]="item.imageLoaded"
@@ -100,7 +144,7 @@
               {{item.id}}
             </div>
             <div class="card-footer">
-              {{item.price}}$
+              {{item.price | currency}}
             </div>
           </div>
         </lib-masonry-item>
