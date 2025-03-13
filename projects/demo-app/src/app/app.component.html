@@ -2,6 +2,17 @@
   <div class="row g-4">
     <div class="col-md-6">
       <div class="bg-light p-4 rounded shadow-sm sticky-top" style="top: 1rem" [formGroup]="optionsForm">
+        <!-- Status Bar - Adding this helps with debugging -->
+        <div class="alert alert-info mb-3 py-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <span>
+              Mode: <span class="badge bg-primary">{{ optionsForm.get('layout.columnMode')?.value === 'auto' ? 'Auto' : 'Fixed' }}</span>
+              Columns: <span class="badge bg-success">{{ currentColumnCount }}</span>
+            </span>
+            <small>Width: {{ containerWidth }}px</small>
+          </div>
+        </div>
+
         <accordion>
           <!-- Layout Section -->
           <accordion-group class="mb-4" [isOpen]="true">
@@ -27,6 +38,17 @@
                       Fixed number
                     </label>
                   </div>
+                </div>
+
+                <!-- Add column width control for auto mode -->
+                <div class="mb-3" *ngIf="optionsForm.get('layout.columnMode')?.value === 'auto'">
+                  <label class="form-label">
+                    <span class="badge bg-secondary mb-2">
+                      Column Width: <span class="text-warning">{{optionsForm.get('layout.columnWidth')?.value}}px</span>
+                    </span>
+                    <input type="range" class="form-range"
+                           formControlName="columnWidth" min="100" max="400" step="10">
+                  </label>
                 </div>
 
                 <!-- Show column number input when using fixed mode -->
@@ -61,6 +83,7 @@
             </div>
           </accordion-group>
 
+          <!-- Rest of the accordion groups remain unchanged -->
           <!-- Animation Section -->
           <accordion-group class="mb-4" [isOpen]="true">
             <div accordion-heading class="h5 mb-0">Animation</div>
@@ -126,7 +149,7 @@
 
     <!-- Masonry Grid -->
     <div class="col-md-6">
-      <lib-ngx-super-masonry [options]="masonryOptions"  (layoutComplete)="onLayoutComplete($event)">
+      <lib-ngx-super-masonry [options]="masonryOptions" (layoutComplete)="onLayoutComplete($event)">
         <lib-masonry-item *ngFor="let item of images; trackBy: trackByFn" [data]="item">
           <div class="card h-100">
             <div class="image-container">
