@@ -149,7 +149,10 @@
 
     <!-- Masonry Grid -->
     <div class="col-md-6">
-      <lib-ngx-super-masonry [options]="masonryOptions" (layoutComplete)="onLayoutComplete($event)">
+      <lib-ngx-super-masonry [options]="masonryOptions"
+                             (layoutComplete)="onLayoutComplete($event)"
+                             (itemsFiltered)="onItemsFiltered($event)"
+                             (itemsSorted)="onItemsSorted($event)">
         <lib-masonry-item *ngFor="let item of images; trackBy: trackByFn" [data]="item">
           <div class="card h-100">
             <div class="image-container">

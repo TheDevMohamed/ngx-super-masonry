@@ -298,4 +298,20 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     };
   }
+
+  /**
+   * Handler for filtered items event
+   */
+  onItemsFiltered(items: MasonryItemComponent<ImageItem>[]): void {
+    console.log(`Filtered to ${items.length} items: `, items );
+    // Additional handling as needed
+  }
+
+  /**
+   * Handler for sorted items event
+   */
+  onItemsSorted(items: MasonryItemComponent<ImageItem>[]): void {
+    console.log('Items sorted: ', items);
+    // Additional handling as needed
+  }
 }

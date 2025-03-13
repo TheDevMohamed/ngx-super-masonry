@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build:demo": "ng build demo-app",
+    "build:lib": "ng build ngx-super-masonry",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },

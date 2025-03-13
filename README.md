@@ -2,7 +2,6 @@
 
 A high-performance masonry layout library for Angular applications with advanced configuration options for responsive designs.
 
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Angular](https://img.shields.io/badge/Angular-v17+-red.svg)
 
 ## Overview
@@ -99,10 +98,6 @@ The component provides the following events:
 ## Demo
 
 Check out the [live demo](https://demo-url-here.com) to see ngx-super-masonry in action and experiment with different configuration options.
-
-## License
-
-MIT
 
 ## Contributing
 

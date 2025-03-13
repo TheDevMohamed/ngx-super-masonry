@@ -86,7 +86,8 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
    * Emits when layout is complete
    */
   @Output() layoutComplete = new EventEmitter<LayoutEvent>();
-
+  @Output() itemsFiltered = new EventEmitter<MasonryItemComponent<any>[]>();
+  @Output() itemsSorted = new EventEmitter<MasonryItemComponent<any>[]>();
   /** Collection of items to layout */
   @ContentChildren(MasonryItemComponent)
   items!: QueryList<MasonryItemComponent<TData>>;
@@ -324,10 +325,21 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
     options: MasonryOptions<TData>
   ): MasonryItemComponent<TData>[] {
     // Apply filter function if provided
-    let visibleItems = options.filterFunction ? options.filterFunction(items) : items;
+    let visibleItems;
+    if (options.filterFunction) {
+      visibleItems = options.filterFunction(items);
+      this.itemsFiltered.emit(visibleItems); // Emit the filtered items
+    } else {
+      visibleItems = items;
+    }
 
-    // Apply sort function if provided
-    return options.sortFunction ? options.sortFunction(visibleItems) : visibleItems;
+    if (options.sortFunction) {
+      const sortedVisibleItems = options.sortFunction(visibleItems);
+      this.itemsSorted.emit(sortedVisibleItems); // Emit the sorted items
+      return sortedVisibleItems;
+    } else {
+      return visibleItems;
+    }
   }
 
   // Update display property of items based on visibility
