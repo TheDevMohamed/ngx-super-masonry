@@ -6,6 +6,7 @@
     "start": "ng serve",
     "build:demo": "ng build demo-app",
     "build:lib": "ng build ngx-super-masonry",
+    "build": "npm run build:lib && npm run build:demo",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
