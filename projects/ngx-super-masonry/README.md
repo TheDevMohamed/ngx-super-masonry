@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/TheDevMohamed/ngx-super-masonry/main/projects/ngx-super-masonry/read-me-banner.png" alt="ngx-super-masonry logo" width="300">
+  <img src="https://github.com/TheDevMohamed/ngx-super-masonry/blob/main/read-me-banner.png?raw=true" alt="ngx-super-masonry logo" width="300">
 </p>
 
 # ngx-super-masonry
