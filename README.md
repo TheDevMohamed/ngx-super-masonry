@@ -97,7 +97,7 @@ The component provides the following events:
 
 ## Demo
 
-Check out the [live demo](https://demo-url-here.com) to see ngx-super-masonry in action and experiment with different configuration options.
+Check out the [live demo](https://ngx-super-masonry.vercel.app/) to see ngx-super-masonry in action and experiment with different configuration options.
 
 ## Contributing
 
