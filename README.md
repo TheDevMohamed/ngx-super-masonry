@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://github.com/TheDevMohamed/ngx-super-masonry/blob/main/read-me-banner.png?raw=true" alt="ngx-super-masonry logo" width="300">
+</p>
+
 # ngx-super-masonry
 
 A high-performance masonry layout library for Angular applications with advanced configuration options for responsive designs.
