@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build:demo": "ng build demo-app",
     "build:lib": "ng build ngx-super-masonry",
-    "build": "ng build ngx-super-masonry && ng build demo-app --configuration production",
+    "build": "ng build ngx-super-masonry && ng build demo-app --configuration production --base-href /",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
