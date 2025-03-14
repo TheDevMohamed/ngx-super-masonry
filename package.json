@@ -1,11 +1,25 @@
 {
-  "name": "angular-masonry-superstar",
-  "version": "0.0.0",
+  "name": "ngx-super-masonry",
+  "version": "0.0.2",
+  "description": "A high-performance masonry layout library for Angular applications",
+  "keywords": ["angular", "masonry", "layout", "grid"],
+  "author": "TheDevMohamed",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheDevMohamed/ngx-super-masonry.git"
+  },
+  "homepage": "https://ngx-super-masonry.vercel.app/",
+  "peerDependencies": {
+    "@angular/common": "^19.1.0",
+    "@angular/core": "^19.1.0"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build:demo": "ng build demo-app",
-    "build:lib": "ng build ngx-super-masonry",
+    "build:lib": "ng build ngx-super-masonry && cp README.md dist/ngx-super-masonry/",
+    "publish:lib": "npm run build:lib && cd dist/ngx-super-masonry && npm publish --access public",
     "build": "ng build ngx-super-masonry && ng build demo-app --configuration production --base-href /",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
