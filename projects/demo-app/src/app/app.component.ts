@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MasonryItemComponent, MasonryOptions, NgxSuperMasonryComponent, LayoutEvent } from 'ngx-super-masonry';
-import { CurrencyPipe, NgForOf, NgIf } from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AccordionModule } from 'ngx-bootstrap/accordion';
 import { fromEvent, Subject } from 'rxjs';
@@ -36,11 +36,9 @@ interface ImageItem {
   imports: [
     MasonryItemComponent,
     NgxSuperMasonryComponent,
-    NgForOf,
     ReactiveFormsModule,
     AccordionModule,
-    CurrencyPipe,
-    NgIf
+    CurrencyPipe
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
@@ -75,12 +73,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   /** Flag to track active resize operations */
   isResizing = false;
-
-  /** Flag to track layout calculations in progress */
-  private isCalculatingLayout = false;
-
-  /** Time (ms) to throttle layout calculations */
-  private layoutThrottleTime = 150;
 
   /** Subject for handling component destruction */
   private destroy$ = new Subject<void>();
@@ -155,13 +147,6 @@ export class AppComponent implements OnInit, OnDestroy {
         item.imageLoaded = true;
       });
     }
-  }
-
-  /**
-   * Track function for ngFor to improve rendering performance
-   */
-  trackByFn(index: number, item: ImageItem): number {
-    return item.id;
   }
 
   /**
@@ -243,7 +228,7 @@ export class AppComponent implements OnInit, OnDestroy {
     fromEvent(window, 'resize')
       .pipe(
         takeUntil(this.destroy$),
-        debounceTime(this.layoutThrottleTime),
+        debounceTime(150),
         distinctUntilChanged()
       )
       .subscribe(() => {
@@ -259,18 +244,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
     // For modern browsers, ResizeObserver is more efficient than resize event
     try {
-      this.resizeObserver = new ResizeObserver(
-        this.createThrottledCallback(() => {
-          if (!this.isCalculatingLayout) {
-            this.isCalculatingLayout = true;
-
-            // Batch layout operations with requestAnimationFrame
-            requestAnimationFrame(() => {
-              this.isCalculatingLayout = false;
-            });
-          }
-        }, this.layoutThrottleTime)
-      );
+      this.resizeObserver = new ResizeObserver(() => {
+        // Layout updates handled by masonry component
+      });
 
       // Wait for the view to initialize before attaching observer
       setTimeout(() => {
@@ -283,20 +259,6 @@ export class AppComponent implements OnInit, OnDestroy {
       // Fallback for browsers that don't support ResizeObserver
       console.log('ResizeObserver not supported, using window resize event');
     }
-  }
-
-  /**
-   * Creates a throttled callback function for resize handling
-   */
-  private createThrottledCallback(callback: () => void, delay: number) {
-    let lastCall = 0;
-    return () => {
-      const now = Date.now();
-      if (now - lastCall >= delay) {
-        lastCall = now;
-        callback();
-      }
-    };
   }
 
   /**

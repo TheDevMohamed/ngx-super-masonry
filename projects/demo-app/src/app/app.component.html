@@ -41,24 +41,28 @@
                 </div>
 
                 <!-- Add column width control for auto mode -->
-                <div class="mb-3" *ngIf="optionsForm.get('layout.columnMode')?.value === 'auto'">
-                  <label class="form-label">
-                    <span class="badge bg-secondary mb-2">
-                      Column Width: <span class="text-warning">{{optionsForm.get('layout.columnWidth')?.value}}px</span>
-                    </span>
-                    <input type="range" class="form-range"
-                           formControlName="columnWidth" min="100" max="400" step="10">
-                  </label>
-                </div>
+                @if (optionsForm.get('layout.columnMode')?.value === 'auto') {
+                  <div class="mb-3">
+                    <label class="form-label">
+                      <span class="badge bg-secondary mb-2">
+                        Column Width: <span class="text-warning">{{optionsForm.get('layout.columnWidth')?.value}}px</span>
+                      </span>
+                      <input type="range" class="form-range"
+                             formControlName="columnWidth" min="100" max="400" step="10">
+                    </label>
+                  </div>
+                }
 
                 <!-- Show column number input when using fixed mode -->
-                <div class="mb-3" *ngIf="optionsForm.get('layout.columnMode')?.value === 'fixed'">
-                  <label class="form-label">
-                    Number of Columns:
-                    <input type="number" class="form-control form-control-sm w-auto"
-                           formControlName="columns" min="1" max="12">
-                  </label>
-                </div>
+                @if (optionsForm.get('layout.columnMode')?.value === 'fixed') {
+                  <div class="mb-3">
+                    <label class="form-label">
+                      Number of Columns:
+                      <input type="number" class="form-control form-control-sm w-auto"
+                             formControlName="columns" min="1" max="12">
+                    </label>
+                  </div>
+                }
               </div>
 
               <!-- Gutters remain unchanged -->
@@ -134,13 +138,15 @@
               </div>
 
               <!-- Sort Direction -->
-              <div class="mb-3" *ngIf="optionsForm.get('filter.sortEnabled')?.value">
-                <label class="form-label">Sort Direction</label>
-                <select class="form-select" formControlName="sortDirection">
-                  <option value="asc">Price: Low to High</option>
-                  <option value="desc">Price: High to Low</option>
-                </select>
-              </div>
+              @if (optionsForm.get('filter.sortEnabled')?.value) {
+                <div class="mb-3">
+                  <label class="form-label">Sort Direction</label>
+                  <select class="form-select" formControlName="sortDirection">
+                    <option value="asc">Price: Low to High</option>
+                    <option value="desc">Price: High to Low</option>
+                  </select>
+                </div>
+              }
             </div>
           </accordion-group>
         </accordion>
@@ -153,27 +159,29 @@
                              (layoutComplete)="onLayoutComplete($event)"
                              (itemsFiltered)="onItemsFiltered($event)"
                              (itemsSorted)="onItemsSorted($event)">
-        <lib-masonry-item *ngFor="let item of images; trackBy: trackByFn" [data]="item">
-          <div class="card h-100">
-            <div class="image-container">
-              <div class="placeholder-overlay" [class.hidden]="item.imageLoaded">
-                <div class="skeleton-badge"></div>
-                <div class="skeleton-footer"></div>
+        @for (item of images; track item.id) {
+          <lib-masonry-item [data]="item">
+            <div class="card h-100">
+              <div class="image-container">
+                <div class="placeholder-overlay" [class.hidden]="item.imageLoaded">
+                  <div class="skeleton-badge"></div>
+                  <div class="skeleton-footer"></div>
+                </div>
+                <img [src]="item.src"
+                     (load)="onImageLoad(item)"
+                     [class.loaded]="item.imageLoaded"
+                     class="card-img-top"
+                     alt="">
               </div>
-              <img [src]="item.src"
-                   (load)="onImageLoad(item)"
-                   [class.loaded]="item.imageLoaded"
-                   class="card-img-top"
-                   alt="">
+              <div class="position-absolute top-0 start-0 m-2 badge bg-danger">
+                {{item.id}}
+              </div>
+              <div class="card-footer">
+                {{item.price | currency}}
+              </div>
             </div>
-            <div class="position-absolute top-0 start-0 m-2 badge bg-danger">
-              {{item.id}}
-            </div>
-            <div class="card-footer">
-              {{item.price | currency}}
-            </div>
-          </div>
-        </lib-masonry-item>
+          </lib-masonry-item>
+        }
       </lib-ngx-super-masonry>
     </div>
   </div>

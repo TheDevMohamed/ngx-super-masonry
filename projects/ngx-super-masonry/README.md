@@ -6,7 +6,7 @@
 
 A high-performance masonry layout library for Angular applications with advanced configuration options for responsive designs.
 
-![Angular](https://img.shields.io/badge/Angular-v17+-red.svg)
+![Angular](https://img.shields.io/badge/Angular-v20+-red.svg)
 
 ## Overview
 
@@ -37,12 +37,14 @@ import { MasonryItemComponent, NgxSuperMasonryComponent } from 'ngx-super-masonr
 @Component({
   selector: 'app-gallery',
   standalone: true,
-  imports: [MasonryItemComponent, NgxSuperMasonryComponent, NgForOf],
+  imports: [MasonryItemComponent, NgxSuperMasonryComponent],
   template: `
     <lib-ngx-super-masonry [options]="masonryOptions">
-      <lib-masonry-item *ngFor="let item of items" [data]="item">
-        <!-- Your item content here -->
-      </lib-masonry-item>
+      @for (item of items; track item.id) {
+        <lib-masonry-item [data]="item">
+          <!-- Your item content here -->
+        </lib-masonry-item>
+      }
     </lib-ngx-super-masonry>
   `
 })
@@ -76,7 +78,7 @@ The masonry grid can be configured with the following options:
 
 For optimal performance:
 
-1. Use the `trackByFn` with `*ngFor` to improve rendering efficiency
+1. Use the track function with `@for` to improve rendering efficiency
 2. Specify image dimensions to reduce layout shifts
 3. Use `requestAnimationFrame` for DOM updates
 4. Apply CSS containment to reduce layout calculations
@@ -88,6 +90,29 @@ For optimal performance:
 - Firefox (latest)
 - Safari (latest)
 - Edge (latest)
+
+## Angular 20 Migration
+
+### Breaking Changes
+
+- **Structural Directives:** The library now uses new control flow syntax (`@for`, `@if`) instead of `*ngFor` and `*ngIf`
+- **Template Examples:** Update your templates to use the new Angular 20 control flow blocks
+- **TypeScript 5.8+:** Required minimum TypeScript version
+- **Node.js 20+:** Required minimum Node.js version
+
+### Migration Guide
+
+If upgrading from Angular 19:
+
+```typescript
+// OLD - Angular 19
+<lib-masonry-item *ngFor="let item of items; trackBy: trackByFn" [data]="item">
+
+// NEW - Angular 20
+<lib-masonry-item @for(item of items; track item.id)" [data]="item">
+```
+
+The library code itself is fully compatible with Angular 20 and uses modern APIs. No changes needed to your library usage beyond updating your own templates.
 
 ## Events
 
