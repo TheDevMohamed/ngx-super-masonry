@@ -1,8 +1,13 @@
 {
   "name": "ngx-super-masonry",
-  "version": "20.0.0",
+  "version": "21.0.0",
   "description": "A high-performance masonry layout library for Angular applications",
-  "keywords": ["angular", "masonry", "layout", "grid"],
+  "keywords": [
+    "angular",
+    "masonry",
+    "layout",
+    "grid"
+  ],
   "author": "TheDevMohamed",
   "license": "MIT",
   "repository": {
@@ -11,8 +16,8 @@
   },
   "homepage": "https://ngx-super-masonry.vercel.app/",
   "peerDependencies": {
-    "@angular/common": "^20.0.0",
-    "@angular/core": "^20.0.0"
+    "@angular/common": "^21.0.0",
+    "@angular/core": "^21.0.0"
   },
   "scripts": {
     "ng": "ng",
@@ -26,14 +31,14 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^20.0.0",
-    "@angular/common": "^20.0.0",
-    "@angular/compiler": "^20.0.0",
-    "@angular/core": "^20.0.0",
-    "@angular/forms": "^20.0.0",
-    "@angular/platform-browser": "^20.0.0",
-    "@angular/platform-browser-dynamic": "^20.0.0",
-    "@angular/router": "^20.0.0",
+    "@angular/animations": "^21.2.13",
+    "@angular/common": "^21.2.13",
+    "@angular/compiler": "^21.2.13",
+    "@angular/core": "^21.2.13",
+    "@angular/forms": "^21.2.13",
+    "@angular/platform-browser": "^21.2.13",
+    "@angular/platform-browser-dynamic": "^21.2.13",
+    "@angular/router": "^21.2.13",
     "bootstrap": "^5.3.3",
     "ngx-bootstrap": "^20.0.0",
     "rxjs": "~7.8.0",
@@ -41,9 +46,9 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^20.0.0",
-    "@angular/cli": "^20.0.0",
-    "@angular/compiler-cli": "^20.0.0",
+    "@angular/build": "^21.2.11",
+    "@angular/cli": "^21.2.11",
+    "@angular/compiler-cli": "^21.2.13",
     "@types/jasmine": "~5.1.0",
     "jasmine-core": "~5.5.0",
     "karma": "~6.4.0",
@@ -51,7 +56,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "ng-packagr": "^20.0.0",
-    "typescript": "~5.8.0"
+    "ng-packagr": "^21.2.3",
+    "typescript": "~5.9.3"
   }
 }
