@@ -1,3 +1,5 @@
+A high-performance masonry layout library for Angular applications with advanced configuration options for responsive designs.
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/TheDevMohamed/ngx-super-masonry/main/read-me-banner.png" alt="ngx-super-masonry logo" width="300">
 </p>
