@@ -21,6 +21,16 @@ A high-performance masonry layout library for Angular applications with advanced
 - **TypeScript Support** - Fully typed API with generic support for item data
 - **Responsive Design** - Automatically adapts to container width changes
 
+## Version Compatibility
+
+| Library Version | Angular Version |
+|-----------------|-----------------|
+| 21.x            | 21.x            |
+| 20.x            | 20.x            |
+| 19.x            | 19.x            |
+
+> **Note:** The library version matches the Angular major version for easier compatibility management.
+
 ## Installation
 
 ```bash
