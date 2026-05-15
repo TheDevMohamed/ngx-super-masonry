@@ -29,6 +29,7 @@ High-performance masonry grid layout for Angular with dynamic columns, animation
 |-----------------|-----------------|
 | 21.x            | 21.x            |
 | 20.x            | 20.x            |
+| 19.x            | 19.x            |
 
 > **Note:** The library version now matches the Angular major version for easier compatibility management.
 
