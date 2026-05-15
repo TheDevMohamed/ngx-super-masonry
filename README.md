@@ -29,6 +29,7 @@ A high-performance masonry layout library for Angular applications with advanced
 |-----------------|-----------------|
 | 21.x            | 21.x            |
 | 20.x            | 20.x            |
+| 19.x            | 19.x            |
 
 > **Note:** The library version now matches the Angular major version for easier compatibility management.
 
