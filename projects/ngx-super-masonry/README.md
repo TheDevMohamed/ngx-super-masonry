@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="https://github.com/TheDevMohamed/ngx-super-masonry/blob/main/read-me-banner.png?raw=true" alt="ngx-super-masonry logo" width="300">
+  <img src="https://raw.githubusercontent.com/TheDevMohamed/ngx-super-masonry/main/read-me-banner.png" alt="ngx-super-masonry logo" width="300">
 </p>
 
 # ngx-super-masonry
 
 A high-performance masonry layout library for Angular applications with advanced configuration options for responsive designs.
 
-![Angular](https://img.shields.io/badge/Angular-v20+-red.svg)
+![Angular](https://img.shields.io/badge/Angular-v21+-red.svg)
 
 ## Overview
 
@@ -20,6 +20,15 @@ A high-performance masonry layout library for Angular applications with advanced
 - **Filtering & Sorting** - Built-in support for custom item filtering and ordering
 - **TypeScript Support** - Fully typed API with generic support for item data
 - **Responsive Design** - Automatically adapts to container width changes
+
+## Version Compatibility
+
+| Library Version | Angular Version |
+|-----------------|-----------------|
+| 21.x            | 21.x            |
+| 20.x            | 20.x            |
+
+> **Note:** The library version now matches the Angular major version for easier compatibility management.
 
 ## Installation
 
@@ -90,29 +99,6 @@ For optimal performance:
 - Firefox (latest)
 - Safari (latest)
 - Edge (latest)
-
-## Angular 20 Migration
-
-### Breaking Changes
-
-- **Structural Directives:** The library now uses new control flow syntax (`@for`, `@if`) instead of `*ngFor` and `*ngIf`
-- **Template Examples:** Update your templates to use the new Angular 20 control flow blocks
-- **TypeScript 5.8+:** Required minimum TypeScript version
-- **Node.js 20+:** Required minimum Node.js version
-
-### Migration Guide
-
-If upgrading from Angular 19:
-
-```typescript
-// OLD - Angular 19
-<lib-masonry-item *ngFor="let item of items; trackBy: trackByFn" [data]="item">
-
-// NEW - Angular 20
-<lib-masonry-item @for(item of items; track item.id)" [data]="item">
-```
-
-The library code itself is fully compatible with Angular 20 and uses modern APIs. No changes needed to your library usage beyond updating your own templates.
 
 ## Events
 

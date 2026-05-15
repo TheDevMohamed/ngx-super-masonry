@@ -1,12 +1,12 @@
 <p align="center">
-  <img src="https://github.com/TheDevMohamed/ngx-super-masonry/blob/main/read-me-banner.png?raw=true" alt="ngx-super-masonry logo" width="300">
+  <img src="https://raw.githubusercontent.com/TheDevMohamed/ngx-super-masonry/main/read-me-banner.png" alt="ngx-super-masonry logo" width="300">
 </p>
 
 # ngx-super-masonry
 
 A high-performance masonry layout library for Angular applications with advanced configuration options for responsive designs.
 
-![Angular](https://img.shields.io/badge/Angular-v17+-red.svg)
+![Angular](https://img.shields.io/badge/Angular-v21+-red.svg)
 
 ## Overview
 
@@ -20,6 +20,15 @@ A high-performance masonry layout library for Angular applications with advanced
 - **Filtering & Sorting** - Built-in support for custom item filtering and ordering
 - **TypeScript Support** - Fully typed API with generic support for item data
 - **Responsive Design** - Automatically adapts to container width changes
+
+## Version Compatibility
+
+| Library Version | Angular Version |
+|-----------------|-----------------|
+| 21.x            | 21.x            |
+| 20.x            | 20.x            |
+
+> **Note:** The library version now matches the Angular major version for easier compatibility management.
 
 ## Installation
 
@@ -37,12 +46,14 @@ import { MasonryItemComponent, NgxSuperMasonryComponent } from 'ngx-super-masonr
 @Component({
   selector: 'app-gallery',
   standalone: true,
-  imports: [MasonryItemComponent, NgxSuperMasonryComponent, NgForOf],
+  imports: [MasonryItemComponent, NgxSuperMasonryComponent],
   template: `
     <lib-ngx-super-masonry [options]="masonryOptions">
-      <lib-masonry-item *ngFor="let item of items" [data]="item">
-        <!-- Your item content here -->
-      </lib-masonry-item>
+      @for (item of items; track item.id) {
+        <lib-masonry-item [data]="item">
+          <!-- Your item content here -->
+        </lib-masonry-item>
+      }
     </lib-ngx-super-masonry>
   `
 })
@@ -76,7 +87,7 @@ The masonry grid can be configured with the following options:
 
 For optimal performance:
 
-1. Use the `trackByFn` with `*ngFor` to improve rendering efficiency
+1. Use the track function with `@for` to improve rendering efficiency
 2. Specify image dimensions to reduce layout shifts
 3. Use `requestAnimationFrame` for DOM updates
 4. Apply CSS containment to reduce layout calculations
