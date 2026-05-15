@@ -6,7 +6,7 @@
 
 A high-performance masonry layout library for Angular applications with advanced configuration options for responsive designs.
 
-![Angular](https://img.shields.io/badge/Angular-v17+-red.svg)
+![Angular](https://img.shields.io/badge/Angular-v19+-red.svg)
 
 ## Overview
 
