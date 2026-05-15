@@ -1,6 +1,6 @@
 {
   "name": "ngx-super-masonry",
-  "version": "21.0.2",
+  "version": "21.0.3",
   "description": "A high-performance masonry layout library for Angular applications with advanced configuration options for responsive designs.",
   "peerDependencies": {
     "@angular/common": "^21.0.0",
