@@ -85,7 +85,13 @@ export class AppComponent implements OnInit, OnDestroy {
         columns: [4],
         columnWidth: [200],
         gutterX: [5],
-        gutterY: [5]
+        gutterY: [5],
+        responsive: this.fb.group({
+          breakpoint480: [1],
+          breakpoint640: [2],
+          breakpoint768: [3],
+          breakpoint1024: [4]
+        })
       }),
       animation: this.fb.group({
         duration: [500],
@@ -189,12 +195,29 @@ export class AppComponent implements OnInit, OnDestroy {
       )
       .subscribe(form => {
         // Extract and normalize form values
-        const isAutoMode = form.layout.columnMode === 'auto';
+        const columnMode = form.layout.columnMode;
 
         // Create new options object
+        let columnsConfig: number | 'auto' | { [width: number]: number };
+
+        if (columnMode === 'auto') {
+          columnsConfig = 'auto';
+        } else if (columnMode === 'responsive') {
+          // Build responsive breakpoints object
+          columnsConfig = {
+            480: Number(form.layout.responsive.breakpoint480),
+            640: Number(form.layout.responsive.breakpoint640),
+            768: Number(form.layout.responsive.breakpoint768),
+            1024: Number(form.layout.responsive.breakpoint1024)
+          };
+        } else {
+          // Fixed mode
+          columnsConfig = Number(form.layout.columns);
+        }
+
         this.masonryOptions = {
           // Layout options
-          columns: isAutoMode ? 'auto' : Number(form.layout.columns),
+          columns: columnsConfig,
           columnWidth: Number(form.layout.columnWidth),
           gutterX: Number(form.layout.gutterX),
           gutterY: Number(form.layout.gutterY),

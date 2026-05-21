@@ -1,6 +1,6 @@
 {
   "name": "ngx-super-masonry",
-  "version": "21.0.3",
+  "version": "21.1.0",
   "description": "A high-performance masonry layout library for Angular applications",
   "keywords": [
     "angular",
@@ -25,6 +25,10 @@
     "build:demo": "ng build demo-app",
     "build:lib": "ng build ngx-super-masonry && cp README.md dist/ngx-super-masonry/",
     "publish:lib": "npm run build:lib && cd dist/ngx-super-masonry && npm publish --access public",
+    "version:patch": "npm version patch --no-git-tag-version && cd projects/ngx-super-masonry && npm version patch --no-git-tag-version",
+    "version:minor": "npm version minor --no-git-tag-version && cd projects/ngx-super-masonry && npm version minor --no-git-tag-version",
+    "publish:patch": "npm run version:patch && npm run publish:lib",
+    "publish:minor": "npm run version:minor && npm run publish:lib",
     "build": "ng build ngx-super-masonry && ng build demo-app --configuration production --base-href /",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

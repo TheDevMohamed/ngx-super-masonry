@@ -78,13 +78,32 @@ The masonry grid can be configured with the following options:
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| columns | 'auto' \| number | 'auto' | Column calculation mode |
+| columns | 'auto' \| number \| object | 'auto' | Column calculation mode. Can be a number, 'auto', or a breakpoint object |
 | columnWidth | number | 200 | Width of each column in auto mode |
 | gutterX | number | 10 | Horizontal spacing between items |
 | gutterY | number | 10 | Vertical spacing between items |
 | animationDuration | number | 0 | Duration of animations in ms |
 | filterFunction | Function | undefined | Custom function to filter items |
 | sortFunction | Function | undefined | Custom function to sort items |
+
+### Responsive Column Configuration
+
+You can define different column counts for different screen sizes using the `columns` property as an object:
+
+```typescript
+masonryOptions = {
+  columns: {
+    480: 1,   // 1 column below 480px
+    640: 2,   // 2 columns from 640px to 767px
+    768: 3,   // 3 columns from 768px to 1023px
+    1024: 4   // 4 columns from 1024px and above
+  },
+  gutterX: 10,
+  gutterY: 10
+};
+```
+
+The component automatically selects the appropriate column count based on the current container width, using the largest breakpoint that is less than or equal to the container width.
 
 ## Performance Considerations
 

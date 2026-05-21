@@ -19,8 +19,8 @@ import { MasonryItemComponent } from '../masonry-item/masonry-item.component';
  * Configuration options for masonry grid layout filtering
  */
 export interface MasonryOptions<TData> {
-  /** Number of columns or 'auto' for responsive layout */
-  columns?: number | 'auto';
+  /** Number of columns, 'auto' for responsive layout, or breakpoints object for width-based columns */
+  columns?: number | 'auto' | { [width: number]: number };
   /** Width of each column when using 'auto' columns */
   columnWidth?: number;
   /** Horizontal spacing between items */
@@ -114,6 +114,11 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
     const opts = this.getActiveOptions();
     const width = this.containerWidth();
 
+    // Handle columns as a breakpoints object
+    if (typeof opts.columns === 'object' && opts.columns !== null) {
+      return this.getColumnsForWidth(opts.columns as { [width: number]: number }, width);
+    }
+
     // Auto calculate columns based on container width and column width
     if (opts.columns === 'auto') {
       const gutterX = opts.gutterX || 0;
@@ -183,16 +188,14 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
   // Update CSS variables used by child components
   private updateCSSVariables(options: MasonryOptions<TData>): void {
     const el = this.elementRef.nativeElement;
-    const columns = options.columns || 1;
+    const columns = this.columns(); // Use computed columns value to handle breakpoints
     const gutterX = options.gutterX || 0;
     const gutterY = options.gutterY || 0;
 
     // Update column width CSS variable
-    if (typeof columns === 'number') {
-      const columnWidthPercent = 100 / columns;
-      const gutterPercent = (gutterX / columns);
-      el.style.setProperty('--masonry-column-width', `calc(${columnWidthPercent}% - ${gutterPercent * 2}px)`);
-    }
+    const columnWidthPercent = 100 / columns;
+    const gutterPercent = (gutterX / columns);
+    el.style.setProperty('--masonry-column-width', `calc(${columnWidthPercent}% - ${gutterPercent * 2}px)`);
 
     el.style.setProperty('--masonry-gutter-x', `${gutterX}px`);
     el.style.setProperty('--masonry-gutter-y', `${gutterY}px`);
@@ -218,6 +221,26 @@ export class NgxSuperMasonryComponent<TData> implements AfterContentInit, OnDest
     if (newBreakpoint !== this.currentBreakpoint()) {
       this.currentBreakpoint.set(newBreakpoint);
     }
+  }
+
+  // Get columns value for a given container width from a breakpoints object
+  private getColumnsForWidth(columnsMap: { [width: number]: number }, containerWidth: number): number {
+    // Sort breakpoint widths in descending order
+    const breakpoints = Object.keys(columnsMap)
+      .map(Number)
+      .sort((a, b) => a - b);
+
+    // Find the applicable breakpoint: the largest breakpoint that is <= containerWidth
+    let applicableBreakpoint = breakpoints[0];
+    for (const bp of breakpoints) {
+      if (bp <= containerWidth) {
+        applicableBreakpoint = bp;
+      } else {
+        break;
+      }
+    }
+
+    return Math.max(1, columnsMap[applicableBreakpoint] || 1);
   }
 
   // Get the active options considering breakpoints
