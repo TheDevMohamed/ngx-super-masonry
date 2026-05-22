@@ -78,13 +78,110 @@ The masonry grid can be configured with the following options:
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| columns | 'auto' \| number | 'auto' | Column calculation mode |
+| columns | 'auto' \| number \| object | 'auto' | Column calculation mode. Can be a number, 'auto', or a breakpoint object |
 | columnWidth | number | 200 | Width of each column in auto mode |
 | gutterX | number | 10 | Horizontal spacing between items |
 | gutterY | number | 10 | Vertical spacing between items |
 | animationDuration | number | 0 | Duration of animations in ms |
 | filterFunction | Function | undefined | Custom function to filter items |
 | sortFunction | Function | undefined | Custom function to sort items |
+
+### Responsive Column Configuration
+
+You can define different column counts for different screen sizes using the `columns` property as an object. This enables truly responsive layouts that adapt to your container width:
+
+```typescript
+masonryOptions = {
+  columns: {
+    480: 1,   // 1 column below 480px
+    640: 2,   // 2 columns from 640px to 767px
+    768: 3,   // 3 columns from 768px to 1023px
+    1024: 4   // 4 columns from 1024px and above
+  },
+  gutterX: 10,
+  gutterY: 10
+};
+```
+
+The component automatically selects the appropriate column count based on the current container width, using the largest breakpoint that is less than or equal to the container width.
+
+#### Dynamic Responsive Configuration with Reactive Forms
+
+For even more flexibility, you can combine responsive breakpoints with reactive forms to allow users to customize the layout dynamically:
+
+```typescript
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, takeUntil } from 'rxjs/operators';
+
+@Component({
+  selector: 'app-masonry-grid',
+  standalone: true,
+  imports: [NgxSuperMasonryComponent, MasonryItemComponent, ReactiveFormsModule],
+  template: `
+    <form [formGroup]="configForm">
+      <!-- Breakpoint Controls -->
+      <div formGroupName="responsive">
+        <input formControlName="breakpoint480" type="number" min="1" max="4">
+        <input formControlName="breakpoint640" type="number" min="1" max="4">
+        <input formControlName="breakpoint768" type="number" min="1" max="4">
+        <input formControlName="breakpoint1024" type="number" min="1" max="4">
+      </div>
+    </form>
+    
+    <lib-ngx-super-masonry [options]="masonryOptions">
+      @for (item of items; track item.id) {
+        <lib-masonry-item [data]="item">{{ item.title }}</lib-masonry-item>
+      }
+    </lib-ngx-super-masonry>
+  `
+})
+export class MasonryGridComponent implements OnInit, OnDestroy {
+  configForm = this.fb.group({
+    responsive: this.fb.group({
+      breakpoint480: [1],
+      breakpoint640: [2],
+      breakpoint768: [3],
+      breakpoint1024: [4]
+    })
+  });
+
+  masonryOptions: MasonryOptions = { columns: 'auto' };
+  private destroy$ = new Subject<void>();
+
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.configForm.get('responsive')?.valueChanges
+      .pipe(
+        debounceTime(100),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(breakpoints => {
+        this.masonryOptions = {
+          columns: {
+            480: breakpoints.breakpoint480,
+            640: breakpoints.breakpoint640,
+            768: breakpoints.breakpoint768,
+            1024: breakpoints.breakpoint1024
+          },
+          gutterX: 10,
+          gutterY: 10
+        };
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}
+```
+
+**Benefits of this approach:**
+- **User Control** - Allow end-users to customize column layout for their preferences
+- **Real-time Updates** - Changes apply immediately with smooth animations
+- **Persistent Configuration** - Save user preferences to localStorage or backend
+- **Accessibility** - Helps users with different viewport requirements
 
 ## Performance Considerations
 
